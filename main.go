@@ -23,8 +23,11 @@ func main() {
 	}()
 
 	for {
-		fmt.Println(<-c1)
-		// Receiving is a blocking call
-		fmt.Println(<-c2)
+		select {
+		case msg1 := <-c1:
+			fmt.Println(msg1)
+		case msg2 := <-c2:
+			fmt.Println(msg2)
+		}
 	}
 }
