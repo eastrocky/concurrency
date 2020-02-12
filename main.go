@@ -1,21 +1,17 @@
 package main
 
-import (
-	"fmt"
-	"time"
-)
+import "fmt"
 
 func main() {
-	c := make(chan string)
-	go count("sheep", c)
-	for msg := range c {
-		fmt.Println(msg)
-	}
-}
-func count(thing string, c chan string) {
-	for i := 0; i < 5; i++ {
-		c <- thing
-		time.Sleep(time.Millisecond * 500)
-	}
-	close(c)
+	// You can fill up a buffered channel without a receiver and it
+	// wont block until the channel is full
+	c := make(chan string, 2)
+	c <- "hello"
+	c <- "world"
+
+	msg := <-c
+	fmt.Println(msg)
+
+	msg = <-c
+	fmt.Println(msg)
 }
