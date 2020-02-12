@@ -1,17 +1,30 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 func main() {
-	// You can fill up a buffered channel without a receiver and it
-	// wont block until the channel is full
-	c := make(chan string, 2)
-	c <- "hello"
-	c <- "world"
+	c1 := make(chan string)
+	c2 := make(chan string)
 
-	msg := <-c
-	fmt.Println(msg)
+	go func() {
+		for {
+			c1 <- "every 500ms"
+			time.Sleep(time.Millisecond * 500)
+		}
+	}()
+	go func() {
+		for {
+			c2 <- "every 2 seconds"
+			time.Sleep(time.Second * 2)
+		}
+	}()
 
-	msg = <-c
-	fmt.Println(msg)
+	for {
+		fmt.Println(<-c1)
+		// Receiving is a blocking call
+		fmt.Println(<-c2)
+	}
 }
